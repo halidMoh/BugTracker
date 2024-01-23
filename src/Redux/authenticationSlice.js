@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 //this will be accessed globally
-const authSlice = createSlice({
+const authenticationSlice = createSlice({
   name: "authentication",
   initialState: {
     admin: false,
@@ -22,5 +22,5 @@ const authSlice = createSlice({
   },
 });
 
-export default authSlice.reducer;
-export const { signIn, signOut, createUser } = slice.actions;
+export default authenticationSlice.reducer;
+export const { signIn, signOut, createUser } = authenticationSlice.actions;
