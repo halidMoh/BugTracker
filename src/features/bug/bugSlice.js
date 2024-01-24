@@ -13,11 +13,13 @@
 
 // export default bugSlice.reducer;
 // export const { getBug, createBug, updateBug, setToFixed } = bugSlice.actions;
-import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { baseUrl } from "../../shared/baseUrl";
+
 export const fetchBugs = createAsyncThunk("bugs/fetchBugs", async () => {
   const response = await fetch(baseUrl + "bugs");
   if (!response.ok) {
+    console.log(response.status);
     return Promise.reject("unable to fetch bugs, status " + response.status);
   }
   const data = await response.json();
@@ -34,26 +36,57 @@ const bugSlice = createSlice({
   name: "bugs",
   initialState,
   reducers: {
-    getBug: (state) => fetchBugs(),
-    createBug: (state, action) => {},
-    updateBug: (state, action) => {},
-    setToFixed: (state, action) => {},
+    //  getBug: (state) => fetchBugs(),
+    //createBug: (state, action) => {},
+    // updateBug: (state, action) => {},
+    //setToFixed: (state, action) => {},
   },
   extraReducers: (builder) => {
     builder
-      .addCase(pending, (state) => {
-        state.isLoading = false;
+      .addCase(fetchBugs.pending, (state) => {
+        state.isLoading = true;
       })
-      .addCase(fulfilled, (state, action) => {
+      .addCase(fetchBugs.fulfilled, (state, action) => {
         state.isLoading = false;
         state.errMsg = "";
-        state.bugsArray = action.payload;
+        // state.bugsArray = action.payload;
+        console.log(action.payload);
       })
-      .addCase(rejected, (state, action) => {
+      .addCase(fetchBugs.rejected, (state, action) => {
         state.isLoading = false;
         state.errMsg = action.error ? action.error.message : "Fetch failed";
       });
   },
+
+  // extraReducers: (builder) => {
+  //   builder
+  //     .addCase(pending, (state) => {
+  //       state.isLoading = false;
+  //     })
+  //     .addCase(fulfilled, (state, action) => {
+  //       state.isLoading = false;
+  //       state.errMsg = "";
+  //       state.bugsArray = action.payload;
+  //     })
+  //     .addCase(rejected, (state, action) => {
+  //       state.isLoading = false;
+  //       state.errMsg = action.error ? action.error.message : "Fetch failed";
+  //     });
+  // },
+  // extraReducers: {
+  //   [fetchBugs.pending]: (state) => {
+  //     state.isLoading = true;
+  //   },
+  //   [fetchBugs.fulfilled]: (state, action) => {
+  //     state.isLoading = false;
+  //     state.errMsg = "";
+  //     state.commentsArray = action.payload;
+  //   },
+  //   [fetchBugs.rejected]: (state, action) => {
+  //     state.isLoading = false;
+  //     state.errMsg = action.error ? action.error.message : "Fetch failed";
+  //   },
+  // },
 });
 
 export const bugReducer = bugSlice.reducer;
